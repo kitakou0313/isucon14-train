@@ -1,23 +1,30 @@
 # isucon-tools
 isuconで使うツール群をdockerで使えるようにまとめたtemplate
 
+# ToDo
+- localのOTel colllectorがすぐteminatedされる原因の調査
+- span, resource attributeを追加
+
 ## 試験環境の起動
 https://github.com/matsuu/cloud-init-isucon/tree/main を利用
+
+- AWS上でAMIからインスタンスを作成
+- ubuntuユーザーでssh
+- キーペアをisuconユーザーでも利用できるよう変更
 ```
-sudo launchctl stop com.canonical.multipassd
-sudo launchctl start com.canonical.multipassd
+sudo cp /home/ubuntu/.ssh/authorized_keys /home/isucon/.ssh/
+sudo chown isucon:isucon  /home/isucon/.ssh/authorized_keys
+```
+- 利用するAppをNode.jsに変更 前のserviceの停止も実施する
+    - systemctl
+- （必要なら）ブラウザからアクセスできるようにACLを変更
+    - https://repost.aws/ja/knowledge-center/connect-http-https-ec2
 
-cd cloud-init-isucon/
-
-multipass launch --name isucon14 --cpus 2 --disk 20G --memory 4G --timeout 86400 --cloud-init isucon14/isucon14.cfg 24.04
-
-multipass start isucon14
-
-multipass shell isucon14
-
-multipass stop isucon14
-
-multipass delete --purge isucon14
+## トンネリング
+- sshでトンネリング
+    - ポート番号はローカルでLIESTENしているOTel Collectorのものを利用する
+```
+ssh -R 4317:localhost:4317 isucon@35.76.111.99
 ```
 
 ## 使用準備

@@ -1,0 +1,23 @@
+{
+  "name": "nodejs",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node --import ./dist/instrumentation.js dist/main.js",
+    "dev": "tsx --import ./src/instrumentation.ts watch src/main.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@opentelemetry/auto-instrumentations-node": "^0.77.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.219.0",
+    "@opentelemetry/sdk-node": "^0.219.0",
+    "hono": "^4.6.12",
+    "mysql2": "^3.11.4",
+    "ulid": "^2.3.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^6.0.3"
+  }
+}
