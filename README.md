@@ -1,6 +1,25 @@
 # isucon-tools
 isuconで使うツール群をdockerで使えるようにまとめたtemplate
 
+## 試験環境の起動
+https://github.com/matsuu/cloud-init-isucon/tree/main を利用
+```
+sudo launchctl stop com.canonical.multipassd
+sudo launchctl start com.canonical.multipassd
+
+cd cloud-init-isucon/
+
+multipass launch --name isucon14 --cpus 2 --disk 20G --memory 4G --timeout 86400 --cloud-init isucon14/isucon14.cfg 24.04
+
+multipass start isucon14
+
+multipass shell isucon14
+
+multipass stop isucon14
+
+multipass delete --purge isucon14
+```
+
 ## 使用準備
 - 本テンプレートを使ってリポジトリを作成します
 - `make build`を実行します
