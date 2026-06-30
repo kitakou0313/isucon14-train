@@ -2,7 +2,7 @@
   "name": "nodejs",
   "type": "module",
   "scripts": {
-    "start": "tsc && node --import @opentelemetry/auto-instrumentations-node/register dist/main.js",
+    "start": "tsc && OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 node --import @opentelemetry/auto-instrumentations-node/register dist/main.js",
     "dev": "tsx --import @opentelemetry/auto-instrumentations-node/register watch src/main.ts"
   },
   "dependencies": {
