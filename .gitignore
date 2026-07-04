@@ -1,5 +1,4 @@
-agent/*
-.agents/*
+.claude/skills/*
 
 sample-webapp/sample
 
