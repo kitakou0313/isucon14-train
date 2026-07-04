@@ -1,3 +1,6 @@
+agent/*
+.agents/*
+
 sample-webapp/sample
 
 deploy-test/id_rsa/id_rsa
