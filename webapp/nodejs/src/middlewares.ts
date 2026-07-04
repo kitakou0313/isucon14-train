@@ -1,3 +1,4 @@
+import { trace } from "@opentelemetry/api";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 import type { RowDataPacket } from "mysql2/promise";
@@ -19,6 +20,7 @@ export const appAuthMiddleware = createMiddleware<Environment>(
         return ctx.text("invalid access token", 401);
       }
       ctx.set("user", user);
+      trace.getActiveSpan()?.setAttribute("app.user.id", user.id);
     } catch (error) {
       return ctx.text(`Internal Server Error\n${error}`, 500);
     }
@@ -40,6 +42,7 @@ export const ownerAuthMiddleware = createMiddleware<Environment>(
         return ctx.text("invalid access token", 401);
       }
       ctx.set("owner", owner);
+      trace.getActiveSpan()?.setAttribute("app.owner.id", owner.id);
     } catch (error) {
       return ctx.text(`Internal Server Error\n${error}`, 500);
     }
@@ -61,6 +64,7 @@ export const chairAuthMiddleware = createMiddleware<Environment>(
         return ctx.text("invalid access token", 401);
       }
       ctx.set("chair", chair);
+      trace.getActiveSpan()?.setAttribute("app.chair.id", chair.id);
     } catch (error) {
       return ctx.text(`Internal Server Error\n${error}`, 500);
     }

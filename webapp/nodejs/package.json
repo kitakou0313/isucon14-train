@@ -2,11 +2,12 @@
   "name": "nodejs",
   "type": "module",
   "scripts": {
-    "start": "tsc && OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 node --import @opentelemetry/auto-instrumentations-node/register dist/main.js",
-    "dev": "tsx --import @opentelemetry/auto-instrumentations-node/register watch src/main.ts"
+    "start": "tsc && OTEL_SERVICE_NAME=isuride-node OTEL_RESOURCE_ATTRIBUTES=service.namespace=isuride,deployment.environment.name=training OTEL_TRACES_EXPORTER=otlp OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 OTEL_EXPORTER_OTLP_PROTOCOL=grpc OTEL_NODE_ENABLED_INSTRUMENTATIONS=http,mysql2 node --import ./otel-hook.mjs --import @opentelemetry/auto-instrumentations-node/register dist/main.js",
+    "dev": "OTEL_SERVICE_NAME=isuride-node OTEL_TRACES_EXPORTER=console OTEL_METRICS_EXPORTER=none OTEL_LOGS_EXPORTER=none OTEL_NODE_ENABLED_INSTRUMENTATIONS=http,mysql2 tsx --import ./otel-hook.mjs --import @opentelemetry/auto-instrumentations-node/register watch src/main.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
+    "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.77.0",
     "hono": "^4.6.12",
     "mysql2": "^3.11.4",

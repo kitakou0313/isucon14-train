@@ -33,6 +33,7 @@ import { execSync } from "node:child_process";
 import { internalGetMatching } from "./internal_handlers.js";
 import { createPool } from "mysql2/promise";
 import { logger } from "hono/logger";
+import { trace } from "@opentelemetry/api";
 
 const pool = createPool({
   host: process.env.ISUCON_DB_HOST || "127.0.0.1",
@@ -45,6 +46,18 @@ const pool = createPool({
 
 const app = new Hono<Environment>();
 app.use(logger());
+app.use(async (ctx, next) => {
+  await next();
+  const span = trace.getActiveSpan();
+  if (!span) return;
+  // Name the auto-instrumented SERVER span after the matched route
+  // (the http instrumentation does not know Hono routes).
+  const route =
+    ctx.req.matchedRoutes.findLast((r) => !r.path.includes("*"))?.path ??
+    ctx.req.path;
+  span.updateName(`${ctx.req.method} ${route}`);
+  span.setAttribute("http.route", route);
+});
 app.use(
   createMiddleware<Environment>(async (ctx, next) => {
     const connection = await pool.getConnection();
