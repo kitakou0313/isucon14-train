@@ -114,7 +114,7 @@ app.post(
 app.get("/api/internal/matching", internalGetMatching);
 
 const port = 8080;
-serve(
+const server = serve(
   {
     fetch: app.fetch,
     port,
@@ -123,6 +123,16 @@ serve(
     console.log(`Server is running on http://localhost:${addr.port}`);
   },
 );
+
+// The OTel register (--import) installs its own SIGTERM handler, which
+// disables Node's default exit-on-SIGTERM but never calls process.exit().
+// Drain everything keeping the event loop alive so the process can exit;
+// OTel then flushes remaining spans in its beforeExit hook.
+process.on("SIGTERM", () => {
+  server.close();
+  if ("closeIdleConnections" in server) server.closeIdleConnections();
+  pool.end().catch(() => {});
+});
 
 async function postInitialize(ctx: Context<Environment>) {
   const body = await ctx.req.json<{ payment_server: string }>();
