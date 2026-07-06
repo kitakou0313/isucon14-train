@@ -23,8 +23,10 @@ sudo chown isucon:isucon  /home/isucon/.ssh/authorized_keys
 ## トンネリング
 - sshでトンネリング
     - ポート番号はローカルでLIESTENしているOTel Collectorのものを利用する
+- プロセスがハングしないようにする autosshの導入
 ```
-ssh -N -R 4317:localhost:4317 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes isucon@
+ssh -f -N -R 4317:localhost:4317 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes isucon@
+autossh -M 0 -f -C -N -R 4317:localhost:4317 isucon@
 ```
 
 ## 使用準備
